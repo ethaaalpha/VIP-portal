@@ -50,7 +50,7 @@ public class SessionBusiness {
         Cookie cookie = new Cookie(CoreConstants.COOKIES_SESSION, value);
 
         cookie.setHttpOnly(true);
-        cookie.setSecure(true);
+        cookie.setSecure(false);
         cookie.setMaxAge(maxAge);
         return cookie;
     }

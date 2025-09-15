@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import fr.insalyon.creatis.vip.core.client.view.user.UserLevel;
 import fr.insalyon.creatis.vip.core.server.business.BusinessException;
 import fr.insalyon.creatis.vip.core.server.business.SessionBusiness;
 import fr.insalyon.creatis.vip.core.server.model.AuthenticationCredentials;
@@ -29,7 +30,11 @@ public class SessionController {
 
     @GetMapping()
     public Session getSession() {
-        return sessionBusiness.getSession();
+        Session session = new Session();
+        session.email = "test@example.com";
+        session.userlevel = UserLevel.Administrator;
+        return session;
+        // return sessionBusiness.getSession();
     }
 
     @PostMapping()
@@ -38,6 +43,7 @@ public class SessionController {
         Cookie cookie = sessionBusiness.signin(credentials);
 
         response.addCookie(cookie);
+        // return sessionBusiness.getSession();
     }
 
     @DeleteMapping

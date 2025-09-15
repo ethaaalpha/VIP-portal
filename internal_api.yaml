@@ -1,0 +1,187 @@
+openapi: '3.0.0'
+info:
+  version: '0.1.0'
+  title: Protocol API interne Vip
+  description: |
+    API REST visant à permettre au front-end d'interagir avec VIP.
+
+servers:
+  - url: /rest/internal
+
+paths:
+  /session:
+    get:
+      summary: Vérifier une session active
+      description: Retourne les informations de session de l'utilisateur connecté.
+      operationId: getSession
+      responses:
+        '200':
+          description: Session active
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Session'
+        '401':
+          description: Non connecté
+    post:
+      summary: Ouvrir une session
+      description: Authentifie un utilisateur et renvoie un cookie de session.
+      operationId: login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Session'
+      responses:
+        '200':
+          description: Authentification réussie
+          headers:
+            Set-Cookie:
+              description: Cookie de session
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Session'
+        '401':
+          description: Identifiants invalides ou erreur d'authentification
+    delete:
+      summary: Fermer une session
+      description: Déconnecte l'utilisateur courant et invalide le cookie.
+      operationId: logout
+      responses:
+        '200':
+          description: Session fermée avec succès
+          headers:
+            Set-Cookie:
+              description: Cookie de session supprimé
+              schema:
+                type: string
+
+  /applications:
+    get:
+      summary: Lister les applications
+      operationId: listApplications
+      responses:
+        '200':
+          description: Liste des applications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Application'
+        '401':
+          description: Non connecté
+    post:
+      summary: Créer une application
+      operationId: createApplication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Application'
+      responses:
+        '200':
+          description: Application créée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Application'
+        '401':
+          description: Non connecté
+
+  /applications/{id}:
+    get:
+      summary: Récupérer une application
+      operationId: getApplication
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Application trouvée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Application'
+        '401':
+          description: Non connecté
+    put:
+      summary: Créer ou modifier une application
+      operationId: updateApplication
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Application'
+      responses:
+        '200':
+          description: Application créée ou mise à jour
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Application'
+        '401':
+          description: Non connecté
+    delete:
+      summary: Supprimer une application
+      operationId: deleteApplication
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Application supprimée
+        '401':
+          description: Non connecté
+
+components:
+  schemas:
+    Session:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+          description: |
+            Mot de passe de l'utilisateur.
+            - Obligatoire en entrée lors du login (`POST /session`).
+            - Renvoyé vide (`""`) dans les réponses (`GET /session`, `POST /session`).
+        level:
+          type: string
+          description: |
+            Niveau de l'utilisateur, défini par le serveur uniquement.
+            - Ignoré à l'entrée.
+            - Présent en sortie si la session est valide.
+
+    Application:
+      type: object
+      required:
+        - name
+        - owner
+      properties:
+        name:
+          type: string
+        owner:
+          type: string

@@ -11,21 +11,22 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 
-@Configuration
-@EnableWebSecurity
+// @Configuration
+// @EnableWebSecurity
 public class InternalSecurityConfig {
 
-    @Bean
-    @Order(2)
-    public SecurityFilterChain getFilterChain(HttpSecurity http) throws Exception {
-        http
-                .securityMatcher(antMatcher("/internal/**"))
-                .authorizeHttpRequests((authorize) -> authorize
-                    .requestMatchers(antMatcher(HttpMethod.POST, "/internal/session")).permitAll()
-                    .requestMatchers(antMatcher("/internal/**")).authenticated()
-                )
-                .cors(Customizer.withDefaults())
-                .csrf((csrf) -> csrf.disable()); // SETUP CSRF BEFORE PRODUCTION
-        return http.build();
-    }
+    // @Bean
+    // @Order(2)
+    // public SecurityFilterChain getFilterChain(HttpSecurity http) throws Exception {
+    //     http
+    //             .securityMatcher(antMatcher("/internal/**"))
+    //             .authorizeHttpRequests((authorize) -> authorize
+    //                 .requestMatchers(antMatcher(HttpMethod.POST, "/internal/session")).permitAll()
+    //                 .requestMatchers(antMatcher("/internal/**")).authenticated()
+    //                 .anyRequest().permitAll()
+    //             )
+    //             .cors(Customizer.withDefaults())
+    //             .csrf((csrf) -> csrf.disable()); // SETUP CSRF BEFORE PRODUCTION
+    //     return http.build();
+    // }
 }
