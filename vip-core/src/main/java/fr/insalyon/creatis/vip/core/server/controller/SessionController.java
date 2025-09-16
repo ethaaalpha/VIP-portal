@@ -30,20 +30,16 @@ public class SessionController {
 
     @GetMapping()
     public Session getSession() {
-        Session session = new Session();
-        session.email = "test@example.com";
-        session.userlevel = UserLevel.Administrator;
-        return session;
-        // return sessionBusiness.getSession();
+        return sessionBusiness.getSession();
     }
 
     @PostMapping()
-    public void createSession(@RequestBody @Valid AuthenticationCredentials credentials, HttpServletResponse response)
+    public Session createSession(@RequestBody @Valid AuthenticationCredentials credentials, HttpServletResponse response)
             throws BusinessException {
         Cookie cookie = sessionBusiness.signin(credentials);
 
         response.addCookie(cookie);
-        // return sessionBusiness.getSession();
+        return sessionBusiness.getSession();
     }
 
     @DeleteMapping
