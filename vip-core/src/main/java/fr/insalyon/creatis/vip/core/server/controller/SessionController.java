@@ -13,7 +13,6 @@ import fr.insalyon.creatis.vip.core.server.business.BusinessException;
 import fr.insalyon.creatis.vip.core.server.business.SessionBusiness;
 import fr.insalyon.creatis.vip.core.server.model.AuthenticationCredentials;
 import fr.insalyon.creatis.vip.core.server.model.Session;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
@@ -36,16 +35,11 @@ public class SessionController {
     @PostMapping()
     public Session createSession(@RequestBody @Valid AuthenticationCredentials credentials, HttpServletResponse response)
             throws BusinessException {
-        Cookie cookie = sessionBusiness.signin(credentials);
-
-        response.addCookie(cookie);
-        return sessionBusiness.getSession();
+        return sessionBusiness.signin(credentials, response);
     }
 
     @DeleteMapping
     public void deleteSession(HttpServletResponse response) throws BusinessException {
-        Cookie cookie = sessionBusiness.signout();
-
-        response.addCookie(cookie);
+        sessionBusiness.signout(response);
     }
 }
