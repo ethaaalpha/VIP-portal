@@ -8,11 +8,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import fr.insalyon.creatis.vip.core.client.view.user.UserLevel;
 import fr.insalyon.creatis.vip.core.server.business.BusinessException;
 import fr.insalyon.creatis.vip.core.server.business.SessionBusiness;
 import fr.insalyon.creatis.vip.core.server.model.AuthenticationCredentials;
 import fr.insalyon.creatis.vip.core.server.model.Session;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
@@ -33,13 +33,13 @@ public class SessionController {
     }
 
     @PostMapping()
-    public Session createSession(@RequestBody @Valid AuthenticationCredentials credentials, HttpServletResponse response)
+    public Session createSession(@RequestBody @Valid AuthenticationCredentials credentials, HttpServletRequest request, HttpServletResponse response)
             throws BusinessException {
-        return sessionBusiness.signin(credentials, response);
+        return sessionBusiness.signin(credentials, request, response);
     }
 
     @DeleteMapping
-    public void deleteSession(HttpServletResponse response) throws BusinessException {
-        sessionBusiness.signout(response);
+    public void deleteSession(HttpServletRequest request, HttpServletResponse response) throws BusinessException {
+        sessionBusiness.signout(request, response);
     }
 }

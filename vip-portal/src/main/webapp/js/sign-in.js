@@ -1,25 +1,24 @@
-function validateEmail(emailField){
+function validateEmail(emailField) {
     var reg = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
 
-    if (reg.test(emailField) == false)
-    {
+    if (reg.test(emailField) == false) {
         document.getElementById('login-failed').style.display = 'block';
-        setTimeout(function(){document.getElementById('login-failed').style.display = 'none'}, 3000);
+        setTimeout(function () { document.getElementById('login-failed').style.display = 'none' }, 3000);
         return false;
-    } else{
+    } else {
         return true;
     }
 }
 
-function forgot_password(){
+function forgot_password() {
     document.getElementById('forgot_password').style.display = 'block';
 }
 
 async function continue_forgotpsw() {
     var email = document.getElementById("floatingEmailWarning").value;
-    if(email == "") {
+    if (email == "") {
         document.getElementById('enter-email-failed').style.display = 'block';
-        setTimeout(function(){document.getElementById('enter-email-failed').style.display = 'none'}, 3000);
+        setTimeout(function () { document.getElementById('enter-email-failed').style.display = 'none' }, 3000);
     } else {
         email = document.getElementById("floatingEmailWarning").value;
         localStorage.setItem("email", email);
@@ -32,35 +31,35 @@ async function continue_forgotpsw() {
             body: JSON.stringify({ email: email })
         })
 
-        .then(response => {
-            if (response.ok) {
+            .then(response => {
+                if (response.ok) {
                     var alertHTML =
-                '<div class="alert alert-warning" id="forgot_password">' +
-                    '<p>An email with your reset code has been sent to your email address.</p>' +
-                    '<div class="form-group">' +
+                        '<div class="alert alert-warning" id="forgot_password">' +
+                        '<p>An email with your reset code has been sent to your email address.</p>' +
+                        '<div class="form-group">' +
                         '<label for="activationCode">Reset code:</label>' +
                         '<input type="text" class="form-control" id="activationCode" placeholder="Enter your reset code">' +
-                    '</div>' +
-                    '<div class="form-group">' +
+                        '</div>' +
+                        '<div class="form-group">' +
                         '<label for="newPassword">New password:</label>' +
                         '<input type="password" class="form-control" id="newPassword" placeholder="Enter your new password">' +
-                    '</div>' +
-                    '<div class="form-group">' +
+                        '</div>' +
+                        '<div class="form-group">' +
                         '<label for="reEnterNewPassword">Re-enter your new password:</label>' +
                         '<input type="password" class="form-control" id="reEnterNewPassword" placeholder="Re-enter your new password">' +
-                    '</div>' +
-                    '<button type="submit" class="btn btn-primary" onclick="resetPassword(); event.preventDefault();">Reset password</button>' +
-                '</div>';
+                        '</div>' +
+                        '<button type="submit" class="btn btn-primary" onclick="resetPassword(); event.preventDefault();">Reset password</button>' +
+                        '</div>';
 
-            // Replace the existing alert block with the new one
-            var oldAlert = document.getElementById('forgot_password');
-            var newAlert = document.createRange().createContextualFragment(alertHTML);
-            oldAlert.parentNode.replaceChild(newAlert, oldAlert);
-            } else {
-                document.getElementById('email-not-found-error').style.display = 'block';
-                setTimeout(function(){document.getElementById('email-not-found-error').style.display = 'none'}, 3000);
-            }
-        });
+                    // Replace the existing alert block with the new one
+                    var oldAlert = document.getElementById('forgot_password');
+                    var newAlert = document.createRange().createContextualFragment(alertHTML);
+                    oldAlert.parentNode.replaceChild(newAlert, oldAlert);
+                } else {
+                    document.getElementById('email-not-found-error').style.display = 'block';
+                    setTimeout(function () { document.getElementById('email-not-found-error').style.display = 'none' }, 3000);
+                }
+            });
     }
 }
 
@@ -73,7 +72,7 @@ function resetPassword() {
     if (newPassword !== reEnterNewPassword || newPassword == "") {
         // Display an error message if the fields are not the same
         document.getElementById('resetPassword-failed').style.display = 'block';
-        setTimeout(function(){document.getElementById('resetPassword-failed; ').style.display = 'none'}, 3000);
+        setTimeout(function () { document.getElementById('resetPassword-failed; ').style.display = 'none' }, 3000);
         return;
     }
 
@@ -83,21 +82,38 @@ function resetPassword() {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ email: email,
+        body: JSON.stringify({
+            email: email,
             activationCode: activationCode,
             newPassword: newPassword
         })
     })
-    .then(response => {
-        if (response.ok) {
-            alert("Your password has been successfully reset!");
-            location.reload();
-        } else {
-            document.getElementById('reset-failed').style.display = 'block';
-            setTimeout(function(){document.getElementById('reset-failed').style.display = 'none'}, 3000);
-        }
-    });
+        .then(response => {
+            if (response.ok) {
+                alert("Your password has been successfully reset!");
+                location.reload();
+            } else {
+                document.getElementById('reset-failed').style.display = 'block';
+                setTimeout(function () { document.getElementById('reset-failed').style.display = 'none' }, 3000);
+            }
+        });
 }
+
+function getCookie(cName) {
+    let cookieExist = true;
+    const name = cName + "=";
+    const cDecoded = decodeURIComponent(document.cookie);
+    const cArr = cDecoded.split('; ');
+    let res;
+    cArr.forEach(val => {
+      if (val.indexOf(name) === 0) res = val.substring(name.length);
+    })
+    if (res == undefined){
+        cookieExist = false;
+    }
+    return cookieExist;
+}
+
 
 function checkSession() {
     fetch("/internal/session").then(function (response) {
@@ -107,9 +123,9 @@ function checkSession() {
     });
 }
 
-async function checkOidcLoginProviders(){
+async function checkOidcLoginProviders() {
     const data = await fetch('rest/platform');
-    if (data.ok == true){
+    if (data.ok == true) {
         const json = await data.json();
         const providers = json.oidcLoginProviders;
         if (providers != null && providers.includes("egi")) {
@@ -121,33 +137,33 @@ async function checkOidcLoginProviders(){
     }
 }
 
-function createAnAccount(){
-    window.location.href="sign-up.html";
+function createAnAccount() {
+    window.location.href = "sign-up.html";
 }
 
-async function get_fetch(form_email, form_password){
+async function get_fetch(form_email, form_password) {
     const data = await fetch('internal/session', {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': getCookie("XSRF-TOKEN")
         },
-        body: JSON.stringify({ "username": form_email, "password" : form_password})
-        })
-        if (data.ok == true){
-           return;
-        } else {
-            document.getElementById('auth-failed').style.display = 'block';
-            setTimeout(function(){document.getElementById('auth-failed').style.display = 'none'}, 3000);
-        }
-
+        body: JSON.stringify({ "username": form_email, "password": form_password })
+    })
+    if (data.ok == true) {
+        return;
+    } else {
+        document.getElementById('auth-failed').style.display = 'block';
+        setTimeout(function () { document.getElementById('auth-failed').style.display = 'none' }, 3000);
+    }
 }
 
 function make_table(data) {
     var pipelineNames = data[0].map((item) => item.name); // list of public pipelines names
     pipelineNames = [...new Set(pipelineNames)]; // remove duplicates
     var application = new Array();
-    pipelineNames.forEach((name, index) => { application.push([index, name])});
+    pipelineNames.forEach((name, index) => { application.push([index, name]) });
 
     let tablecontents = createTableHTMLString(application);
     document.getElementById("my_tbody_app").innerHTML = tablecontents;
@@ -186,17 +202,17 @@ function createTableHTMLString(data) {
     return tablecontents;
 }
 
-async function createGrid(){
+async function createGrid() {
     Promise.all([
         await fetch('rest/pipelines?public')
-        .then((response_app) => response_app.json()),
+            .then((response_app) => response_app.json()),
         await fetch('rest/publications')
-        .then((response_publi) => response_publi.json())
-      ]).then((data) => make_table(data));
+            .then((response_publi) => response_publi.json())
+    ]).then((data) => make_table(data));
 }
 
 
-function clickinner(){
+function clickinner() {
     email = document.getElementById("floatingEmail").value;
     password = document.getElementById("floatingPassword").value;
     validateEmail(email);
@@ -213,7 +229,7 @@ function onKeyPress(event) {
 }
 
 $(function () {
- $("#welcome_signin").first().keypress(onKeyPress)
+    $("#welcome_signin").first().keypress(onKeyPress)
 })
 
 checkSession();

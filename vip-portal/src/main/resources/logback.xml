@@ -69,7 +69,7 @@
 
   <!-- every thing above INFO is logged in vip.log
        every thing above WARN is ALSO logged in vip_errors.log -->
-  <root level="INFO">
+  <root level="DEBUG">
     <appender-ref ref="VIP_LOG"/>
     <appender-ref ref="VIP_ERROR"/>
   </root>
