@@ -21,10 +21,12 @@ import fr.insalyon.creatis.vip.core.server.security.session.SessionAuthenticatio
 public class InternalSecurityConfig {
 
     private final SessionAuthenticationProvider sessionAuthenticationProvider;
+    private final VipAuthenticationEntryPoint vipAuthenticationEntryPoint;
 
     @Autowired
-    public InternalSecurityConfig(SessionAuthenticationProvider sessionAuthenticationProvider) {
+    public InternalSecurityConfig(SessionAuthenticationProvider sessionAuthenticationProvider, VipAuthenticationEntryPoint vipAuthenticationEntryPoint) {
         this.sessionAuthenticationProvider = sessionAuthenticationProvider;
+        this.vipAuthenticationEntryPoint = vipAuthenticationEntryPoint;
     }
 
     @Bean
@@ -36,6 +38,7 @@ public class InternalSecurityConfig {
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers(antMatcher(HttpMethod.POST, "/internal/session")).permitAll()
                         .requestMatchers(antMatcher("/internal/**")).authenticated())
+                .exceptionHandling((exceptionHandling) -> exceptionHandling.authenticationEntryPoint(vipAuthenticationEntryPoint))
                 .cors(Customizer.withDefaults())
                 .csrf((csrf) -> csrf
                         // CSRF token managed by SpringSecurity but MANUALLY setted in the controller

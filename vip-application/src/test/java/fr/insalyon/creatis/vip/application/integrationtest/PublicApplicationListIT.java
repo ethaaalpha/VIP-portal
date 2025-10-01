@@ -23,7 +23,8 @@ public class PublicApplicationListIT extends BaseSpringIT {
     @Autowired private AppVersionBusiness appVersionBusiness;
 
     @Test
-    public void shouldNotIncludePrivateGroupsAndClasses() throws BusinessException, ApplicationException {
+    public void shouldNotIncludePrivateGroupsAndClasses() throws BusinessException, ApplicationException, Exception {
+        setAdminContext();
         Group publicGroup = new Group("public group", true, GroupType.getDefault());
         Group privateGroup = new Group("private group", false, GroupType.getDefault());
 

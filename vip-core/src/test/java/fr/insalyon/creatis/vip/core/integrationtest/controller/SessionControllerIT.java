@@ -19,20 +19,17 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import fr.insalyon.creatis.vip.core.client.bean.User;
 import fr.insalyon.creatis.vip.core.client.view.CoreConstants;
 import fr.insalyon.creatis.vip.core.client.view.user.UserLevel;
 import fr.insalyon.creatis.vip.core.integrationtest.database.BaseSpringIT;
 import fr.insalyon.creatis.vip.core.server.SpringInternalApiConfig;
 import fr.insalyon.creatis.vip.core.server.dao.UserDAO;
 import fr.insalyon.creatis.vip.core.server.model.AuthenticationCredentials;
-import fr.insalyon.creatis.vip.core.server.security.common.SpringPrincipalUser;
 
 @ContextConfiguration(classes = { SpringInternalApiConfig.class })
 public class SessionControllerIT extends BaseSpringIT {
@@ -58,10 +55,6 @@ public class SessionControllerIT extends BaseSpringIT {
         mapper = new ObjectMapper();
     }
 
-    private RequestPostProcessor getUserSecurityMock(User user) {
-        return SecurityMockMvcRequestPostProcessors.user(new SpringPrincipalUser(user));
-    }
-
     @Test
     public void getSession() throws Exception {
         createUser(emailUser1);
@@ -70,7 +63,7 @@ public class SessionControllerIT extends BaseSpringIT {
 
         // not connected
         mockMvc.perform(get("/internal/session"))
-                .andExpect(status().isForbidden());
+                .andExpect(status().is4xxClientError());
 
         // with user connected
         mockMvc.perform(get("/internal/session").with(getUserSecurityMock(user1)))
@@ -125,7 +118,7 @@ public class SessionControllerIT extends BaseSpringIT {
                 .andExpect(jsonPath("$.userlevel").value(UserLevel.Beginner.toString()));
 
         // of course without cookies it fails!
-        mockMvc.perform(get("/internal/session")).andExpect(status().isForbidden());
+        mockMvc.perform(get("/internal/session")).andExpect(status().is4xxClientError());
     }
 
     @Test
@@ -160,7 +153,8 @@ public class SessionControllerIT extends BaseSpringIT {
         mockMvc.perform(get("/internal/session")
             .with(SecurityMockMvcRequestPostProcessors.csrf())
             .cookie(result.getResponse().getCookies()))
-                .andExpect(status().isForbidden());
+                .andDo(print())
+                .andExpect(status().is4xxClientError());
     }
 
     @Test

@@ -57,7 +57,7 @@ public class ApiException extends VipException {
         static {
             addMessage(ApiError.GENERIC_API_ERROR, GENERIC_ERROR_MESSAGE, 0);
             addMessage(ApiError.NOT_IMPLEMENTED, "The {} method is not implemented in the VIP API", 1);
-            addMessage(ApiError.BAD_CREDENTIALS, "Bad credentials", 0);
+            addMessage(ApiError.BAD_CREDENTIALS, "Ba`d credentials", 0);
             addMessage(ApiError.INVALID_PIPELINE_IDENTIFIER, "The {} pipeline identifier is not valid", 1);
             addMessage(ApiError.PIPELINE_NOT_FOUND, "The {} pipeline does not exists or cannot be used", 1);
             addMessage(ApiError.NOT_ALLOWED_TO_USE_PIPELINE, "Not allowed to access pipeline {}", 1);
