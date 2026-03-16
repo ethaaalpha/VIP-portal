@@ -899,13 +899,15 @@
             "type" : "array",
             "items" : {
               "$ref" : "#/components/schemas/Resource"
-            }
+            },
+            "uniqueItems" : true
           },
           "tags" : {
             "type" : "array",
             "items" : {
               "$ref" : "#/components/schemas/Tag"
-            }
+            },
+            "uniqueItems" : true
           },
           "settings" : {
             "type" : "object",
