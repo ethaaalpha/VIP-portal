@@ -29,7 +29,7 @@ public class CorePermissions {
         PermissionChain chain = new PermissionChain(uSupplier.get().getLevel());
 
         conditions.accept(chain);
-        chain.fitler();
+        chain.filter();
     }
 
     public void checkOnlyUserPrivateGroups(Set<Group> groupsToCheck) throws VipException {
